@@ -6,7 +6,6 @@ import jwt from 'jsonwebtoken';
  export const signin = async (req: Request, res: Response): Promise <Response> => {
     
     const user: IUser = new User({
-        username: req.body.username,
         email: req.body.email,
         password: req.body.password,
     });
@@ -16,7 +15,10 @@ import jwt from 'jsonwebtoken';
     const savedUser = await user.save();
     const token: string = jwt.sign( {_id: savedUser._id}, process.env.TOKEN_SECRET || 'tokentest');
 
-    return res.header('token-auth', token).json(savedUser);
+    return res.status(200).send({
+        "user":user,
+        "token": token
+    })
  }
 
  export const login = async (req: Request, res: Response): Promise <Response> => {
@@ -31,6 +33,9 @@ import jwt from 'jsonwebtoken';
         expiresIn: 60 * 60
     });
 
-    return res.header('token-auth', token).json(user);
+    return res.status(200).send({
+        "user":user,
+        "token": token
+    })
  }
 
